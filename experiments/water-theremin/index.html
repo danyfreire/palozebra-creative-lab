@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#02070b" />
+  <title>Water Theremin — Palozebra Creative Lab</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --glass: rgba(2,8,12,.24);
+      --line: rgba(230,250,255,.38);
+      --white: #ecfbff;
+      --red: #ff4b4b;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #02070b; }
+    body { font-family: Arial, Helvetica, sans-serif; }
+    canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: none; }
+
+    .control {
+      position: fixed;
+      z-index: 5;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--glass);
+      color: var(--white);
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .control:hover, .control:focus-visible {
+      outline: none;
+      transform: scale(1.06);
+      background: rgba(220,248,255,.12);
+      border-color: rgba(240,255,255,.75);
+    }
+    .back { top: 16px; left: 16px; font-size: 22px; line-height: 1; }
+    .record { left: 16px; bottom: 16px; }
+    .save { left: 16px; bottom: 16px; }
+    .record-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--red); box-shadow: 0 0 18px rgba(255,75,75,.35); }
+    .recording .record-dot { animation: recPulse .8s ease-in-out infinite; }
+    @keyframes recPulse { 50% { transform: scale(.68); opacity: .6; } }
+
+    .counter {
+      position: fixed;
+      z-index: 5;
+      left: 72px;
+      bottom: 25px;
+      color: var(--white);
+      font: 18px/1 "Courier New", monospace;
+      opacity: 0;
+      transition: opacity .18s ease;
+      text-shadow: 0 0 14px rgba(180,238,255,.32);
+      pointer-events: none;
+    }
+    .counter.visible { opacity: .9; }
+
+    .hint {
+      position: fixed;
+      z-index: 4;
+      left: 50%;
+      top: 50%;
+      width: 78px;
+      height: 78px;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(230,250,255,.5);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: .78;
+      animation: hintPulse 1.8s ease-in-out infinite;
+      transition: opacity .45s ease, transform .45s ease;
+      box-shadow: 0 0 28px rgba(85,210,255,.16);
+    }
+    .hint::after {
+      content: "";
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--white);
+      border-radius: 50%;
+    }
+    .hint.gone { opacity: 0; transform: translate(-50%, -50%) scale(1.8); }
+    @keyframes hintPulse {
+      0%,100% { transform: translate(-50%,-50%) scale(.86); }
+      50% { transform: translate(-50%,-50%) scale(1.12); }
+    }
+
+    .save svg, .back svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <canvas id="water"></canvas>
+
+  <a class="control back" href="/" id="backBtn" aria-label="Back to experiments">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/><path d="M9 12h10"/></svg>
+  </a>
+
+  <button class="control record" id="recordBtn" type="button" aria-label="Record 10 seconds">
+    <span class="record-dot" aria-hidden="true"></span>
+  </button>
+
+  <a class="control save" id="saveBtn" href="#" download hidden aria-label="Save recording">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+  </a>
+
+  <div class="counter" id="counter" aria-live="polite">10</div>
+  <div class="hint" id="hint" aria-hidden="true"></div>
+
+  <script>
+    const lang = (navigator.language || 'en').toLowerCase();
+    const labels = lang.startsWith('es') ? {
+      back: 'Volver a experimentos', record: 'Grabar 10 segundos', save: 'Guardar grabación'
+    } : lang.startsWith('it') ? {
+      back: 'Torna agli esperimenti', record: 'Registra 10 secondi', save: 'Salva registrazione'
+    } : {
+      back: 'Back to experiments', record: 'Record 10 seconds', save: 'Save recording'
+    };
+    document.documentElement.lang = lang.startsWith('es') ? 'es' : lang.startsWith('it') ? 'it' : 'en';
+
+    const canvas = document.getElementById('water');
+    const hint = document.getElementById('hint');
+    const recordBtn = document.getElementById('recordBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const counter = document.getElementById('counter');
+    const backBtn = document.getElementById('backBtn');
+    backBtn.setAttribute('aria-label', labels.back);
+    recordBtn.setAttribute('aria-label', labels.record);
+    saveBtn.setAttribute('aria-label', labels.save);
+
+    const pointer = {
+      x: .5, y: .5, tx: .5, ty: .5,
+      px: innerWidth * .5, py: innerHeight * .5,
+      last: performance.now(), speed: 0, active: false
+    };
+
+    const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+    const lerp = (a,b,t) => a + (b-a)*t;
+
+    let audio = null;
+    let recorder = null;
+    let chunks = [];
+    let recordingURL = null;
+    let countdown = null;
+
+    function impulse(ctx, seconds=2.4, decay=2.5) {
+      const len = Math.floor(ctx.sampleRate * seconds);
+      const b = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c=0;c<2;c++) {
+        const d = b.getChannelData(c);
+        for (let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/len, decay);
+      }
+      return b;
+    }
+
+    function makeAudio() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      const ctx = new AC();
+      const stream = ctx.createMediaStreamDestination();
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      const dry = ctx.createGain();
+      const delay = ctx.createDelay(1.0);
+      const fb = ctx.createGain();
+      const wet = ctx.createGain();
+      const conv = ctx.createConvolver();
+      const rev = ctx.createGain();
+      const master = ctx.createGain();
+
+      osc1.type = 'triangle';
+      osc2.type = 'sine';
+      osc1.frequency.value = 220;
+      osc2.frequency.value = 220.4;
+      gain.gain.value = .0001;
+      filter.type = 'lowpass';
+      filter.frequency.value = 1100;
+      filter.Q.value = 1.8;
+      dry.gain.value = .78;
+      delay.delayTime.value = .17;
+      fb.gain.value = .2;
+      wet.gain.value = .18;
+      conv.buffer = impulse(ctx);
+      rev.gain.value = .17;
+      master.gain.value = .88;
+
+      osc1.connect(gain); osc2.connect(gain); gain.connect(filter);
+      filter.connect(dry); dry.connect(master);
+      filter.connect(delay); delay.connect(fb); fb.connect(delay); delay.connect(wet); wet.connect(master);
+      filter.connect(conv); conv.connect(rev); rev.connect(master);
+      master.connect(ctx.destination); master.connect(stream);
+      osc1.start(); osc2.start();
+
+      return {
+        ctx, stream,
+        update(p) {
+          const idle = performance.now() - p.last;
+          const audible = p.active || idle < 190;
+          const freq = 100 * Math.pow(2, p.x * 3.75);
+          const amp = audible ? .008 + Math.pow(1-p.y, 1.8) * .2 : .0001;
+          const cutoff = 260 + Math.pow(1-p.y, 1.5)*3300 + Math.min(p.speed*18, 2600);
+          const dtime = clamp(.11 + p.speed/3000, .11, .4);
+          const feedback = clamp(.15 + p.speed/5200, .15, .5);
+          const wetness = clamp(.13 + p.speed/6800, .13, .39);
+          const reverb = clamp(.14 + p.speed/11000, .14, .26);
+          const t = ctx.currentTime;
+          osc1.frequency.linearRampToValueAtTime(freq, t+.07);
+          osc2.frequency.linearRampToValueAtTime(freq*1.0027, t+.07);
+          gain.gain.linearRampToValueAtTime(amp, t+.07);
+          filter.frequency.linearRampToValueAtTime(cutoff, t+.07);
+          filter.Q.linearRampToValueAtTime(1.4 + Math.min(p.speed/600,7), t+.07);
+          delay.delayTime.linearRampToValueAtTime(dtime, t+.08);
+          fb.gain.linearRampToValueAtTime(feedback, t+.08);
+          wet.gain.linearRampToValueAtTime(wetness, t+.08);
+          rev.gain.linearRampToValueAtTime(reverb, t+.12);
+        },
+        resume() { return ctx.resume(); }
+      };
+    }
+
+    function wakeAudio() {
+      if (!audio) audio = makeAudio();
+      if (audio) audio.resume().catch(()=>{});
+    }
+
+    function startRecording() {
+      wakeAudio();
+      if (!audio || (recorder && recorder.state === 'recording')) return;
+      if (!window.MediaRecorder) return;
+      if (recordingURL) URL.revokeObjectURL(recordingURL);
+      chunks = [];
+      saveBtn.hidden = true;
+      recordBtn.hidden = false;
+      recordBtn.classList.add('recording');
+      recordBtn.disabled = true;
+      counter.classList.add('visible');
+      let remaining = 10;
+      counter.textContent = remaining;
+
+      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : '';
+      recorder = new MediaRecorder(audio.stream.stream, mime ? {mimeType:mime} : undefined);
+      recorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, {type: chunks[0]?.type || 'audio/webm'});
+        recordingURL = URL.createObjectURL(blob);
+        saveBtn.href = recordingURL;
+        saveBtn.download = `palozebra-water-theremin-${Date.now()}.webm`;
+        saveBtn.hidden = false;
+        recordBtn.hidden = true;
+        recordBtn.classList.remove('recording');
+        recordBtn.disabled = false;
+        counter.classList.remove('visible');
+      };
+      recorder.start();
+
+      clearInterval(countdown);
+      countdown = setInterval(() => {
+        remaining--;
+        counter.textContent = Math.max(remaining,0);
+        if (remaining <= 0) {
+          clearInterval(countdown);
+          if (recorder.state === 'recording') recorder.stop();
+        }
+      },1000);
+    }
+    recordBtn.addEventListener('click', startRecording);
+
+    saveBtn.addEventListener('click', () => {
+      setTimeout(() => {
+        saveBtn.hidden = true;
+        recordBtn.hidden = false;
+      }, 200);
+    });
+
+    function move(clientX, clientY) {
+      const now = performance.now();
+      const dx = clientX - pointer.px;
+      const dy = clientY - pointer.py;
+      const dt = Math.max(16, now - pointer.last);
+      const velocity = Math.hypot(dx,dy) / dt * 16;
+      pointer.speed = lerp(pointer.speed, velocity, .32);
+      pointer.px = clientX; pointer.py = clientY; pointer.last = now;
+      pointer.tx = clamp(clientX / innerWidth,0,1);
+      pointer.ty = clamp(clientY / innerHeight,0,1);
+      hint.classList.add('gone');
+      if (audio) audio.update(pointer);
+    }
+
+    addEventListener('pointermove', e => move(e.clientX,e.clientY), {passive:true});
+    addEventListener('pointerdown', e => { pointer.active=true; wakeAudio(); move(e.clientX,e.clientY); });
+    addEventListener('pointerup', () => { pointer.active=false; if(audio) audio.update(pointer); });
+    addEventListener('touchstart', e => { pointer.active=true; wakeAudio(); const t=e.touches[0]; if(t) move(t.clientX,t.clientY); }, {passive:true});
+    addEventListener('touchmove', e => { const t=e.touches[0]; if(t) move(t.clientX,t.clientY); }, {passive:true});
+    addEventListener('touchend', () => { pointer.active=false; if(audio) audio.update(pointer); }, {passive:true});
+
+    function setupGL() {
+      const gl = canvas.getContext('webgl', {antialias:false, alpha:false});
+      if (!gl) return null;
+      const vs = `attribute vec2 a; void main(){gl_Position=vec4(a,0.,1.);}`;
+      const fs = `
+        precision mediump float;
+        uniform vec2 r;
+        uniform vec2 m;
+        uniform float t;
+        uniform float e;
+        float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float n(vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
+        float f(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p*=2.;a*=.5;}return v;}
+        void main(){
+          vec2 uv=gl_FragCoord.xy/r;
+          float mn=min(r.x,r.y);
+          vec2 p=(gl_FragCoord.xy*2.-r)/mn;
+          vec2 mm=(m*2.-1.)*vec2(r.x/mn,1.);
+          float d=distance(p,mm);
+          float tt=t*.22;
+          float ripple=sin(26.*d-t*7.3)/(1.+32.*d);
+          float ripple2=sin(15.*d-t*3.2)/(1.+17.*d);
+          vec2 q=p;
+          q.x+=.07*sin(q.y*5.+tt*5.1);
+          q.y+=.045*cos(q.x*5.5-tt*3.4);
+          float w=.26*sin(q.x*6.+tt*6.)+.2*sin(q.y*8.-tt*4.4)+.15*sin((q.x+q.y)*8.4+tt*3.6)+f(q*2.15+vec2(tt*.8,-tt*.55))*.44;
+          w+=ripple*(1.15+e*.85)+ripple2*.68;
+          float hi=smoothstep(.35,.92,w);
+          float cau=smoothstep(.18,1.,sin((w+uv.x*.42)*11.));
+          float glow=.018/(.028+d*d*8.);
+          float vig=smoothstep(1.36,.2,length(p));
+          vec3 deep=vec3(.004,.014,.025), mid=vec3(.015,.10,.15), light=vec3(.20,.82,.96);
+          vec3 c=mix(deep,mid,clamp(w*.39+.48,0.,1.));
+          c+=light*hi*.3+light*cau*.055+light*glow*(.65+e*.8);
+          c*=vig;
+          gl_FragColor=vec4(c,1.);
+        }`;
+      const sh=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;};
+      const prog=gl.createProgram(); gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs)); gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs)); gl.linkProgram(prog);
+      const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+      const a=gl.getAttribLocation(prog,'a'), ur=gl.getUniformLocation(prog,'r'), um=gl.getUniformLocation(prog,'m'), ut=gl.getUniformLocation(prog,'t'), ue=gl.getUniformLocation(prog,'e');
+      function resize(){const d=Math.min(devicePixelRatio||1,2),w=Math.floor(innerWidth*d),h=Math.floor(innerHeight*d);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}}
+      return {render(time){resize();gl.useProgram(prog);gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);gl.uniform2f(ur,canvas.width,canvas.height);gl.uniform2f(um,pointer.x,1-pointer.y);gl.uniform1f(ut,time*.001);gl.uniform1f(ue,clamp(pointer.speed/18,0,1));gl.drawArrays(gl.TRIANGLES,0,6);}};
+    }
+
+    const visual = setupGL();
+    function fallback(time) {
+      const ctx = canvas.getContext('2d');
+      canvas.width=innerWidth; canvas.height=innerHeight;
+      ctx.fillStyle='#02070b'; ctx.fillRect(0,0,innerWidth,innerHeight);
+      for(let i=0;i<24;i++){const rr=18+i*27+Math.sin(time*.002+i)*7;ctx.strokeStyle=`rgba(65,210,255,${Math.max(0,.15-i*.005)})`;ctx.beginPath();ctx.arc(pointer.x*innerWidth,pointer.y*innerHeight,rr,0,Math.PI*2);ctx.stroke();}
+    }
+
+    function frame(time) {
+      pointer.x=lerp(pointer.x,pointer.tx,.12); pointer.y=lerp(pointer.y,pointer.ty,.12);
+      const idle=performance.now()-pointer.last; if(idle>120) pointer.speed*=.96; if(idle>650) pointer.speed*=.92;
+      if(audio) audio.update(pointer);
+      if(visual) visual.render(time); else fallback(time);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
