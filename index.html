@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Palozebra Creative Lab</title>
+  <meta name="description" content="Palozebra Creative Lab — interactive creative experiments." />
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #080808; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; }
+    body { min-height: 100vh; display: grid; place-items: center; }
+    main { text-align: center; padding: 2rem; }
+    h1 { margin: 0 0 2rem; font-size: clamp(2rem, 6vw, 5rem); font-weight: 600; letter-spacing: .08em; }
+    button { border: 1px solid #f5f5f5; background: transparent; color: inherit; padding: .9rem 1.4rem; font: inherit; font-size: 1rem; cursor: pointer; border-radius: 999px; }
+    button:hover { background: #f5f5f5; color: #080808; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>PALOZEBRA CREATIVE LAB</h1>
+    <button id="createMusic" type="button">Create music</button>
+  </main>
+
+  <script>
+    const language = (navigator.language || 'en').toLowerCase();
+    const button = document.getElementById('createMusic');
+
+    if (language.startsWith('es')) {
+      button.textContent = 'Crear música';
+      document.documentElement.lang = 'es';
+    } else if (language.startsWith('it')) {
+      button.textContent = 'Crea musica';
+      document.documentElement.lang = 'it';
+    }
+  </script>
+</body>
+</html>
