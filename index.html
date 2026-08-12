@@ -68,7 +68,7 @@
       <div class="titlebar"><span id="experimentsTitle">experiments.idx</span><span id="slotStatus">01 active / 03 slots</span></div>
       <div class="experiments-body">
         <a class="exp-row active" href="/experiments/water-theremin/">
-          <span class="exp-code">EXP_01</span><span id="exp1Label">CREATE MUSIC // WATER + THEREMIN</span><span class="exp-state" id="exp1Status">STATUS: ACTIVE</span>
+          <span class="exp-code">EXP_01</span><span id="exp1Label">CREATE MUSIC</span><span class="exp-state" id="exp1Status">STATUS: ACTIVE</span>
         </a>
         <div class="exp-row disabled" aria-disabled="true"><span class="exp-code">EXP_02</span><span id="exp2Label">UNALLOCATED_PROCESS</span><span class="exp-state" id="exp2Status">STATUS: NULL</span></div>
         <div class="exp-row disabled" aria-disabled="true"><span class="exp-code">EXP_03</span><span id="exp3Label">NO_SIGNAL / RESERVED</span><span class="exp-state" id="exp3Status">STATUS: ----</span></div>
@@ -110,9 +110,9 @@
 
   <script>
     const copy = {
-      en:{html:'en',exp1:'CREATE MUSIC // WATER + THEREMIN',exp1Status:'STATUS: ACTIVE',exp2:'UNALLOCATED_PROCESS',exp2Status:'STATUS: NULL',exp3:'NO_SIGNAL / RESERVED',exp3Status:'STATUS: ----',slot:'01 ACTIVE / 03 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
-      es:{html:'es',exp1:'CREAR MÚSICA // AGUA + THEREMIN',exp1Status:'ESTADO: ACTIVO',exp2:'PROCESO_NO_ASIGNADO',exp2Status:'ESTADO: NULO',exp3:'SIN_SEÑAL / RESERVADO',exp3Status:'ESTADO: ----',slot:'01 ACTIVO / 03 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
-      it:{html:'it',exp1:'CREA MUSICA // ACQUA + THEREMIN',exp1Status:'STATO: ATTIVO',exp2:'PROCESSO_NON_ASSEGNATO',exp2Status:'STATO: NULLO',exp3:'NESSUN_SEGNALE / RISERVATO',exp3Status:'STATO: ----',slot:'01 ATTIVO / 03 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
+      en:{html:'en',exp1:'CREATE MUSIC',exp1Status:'STATUS: ACTIVE',exp2:'UNALLOCATED_PROCESS',exp2Status:'STATUS: NULL',exp3:'NO_SIGNAL / RESERVED',exp3Status:'STATUS: ----',slot:'01 ACTIVE / 03 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
+      es:{html:'es',exp1:'CREAR MÚSICA',exp1Status:'ESTADO: ACTIVO',exp2:'PROCESO_NO_ASIGNADO',exp2Status:'ESTADO: NULO',exp3:'SIN_SEÑAL / RESERVADO',exp3Status:'ESTADO: ----',slot:'01 ACTIVO / 03 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
+      it:{html:'it',exp1:'CREA MUSICA',exp1Status:'STATO: ATTIVO',exp2:'PROCESSO_NON_ASSEGNATO',exp2Status:'STATO: NULLO',exp3:'NESSUN_SEGNALE / RISERVATO',exp3Status:'STATO: ----',slot:'01 ATTIVO / 03 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
     };
 
     const ids={exp1:'exp1Label',exp1Status:'exp1Status',exp2:'exp2Label',exp2Status:'exp2Status',exp3:'exp3Label',exp3Status:'exp3Status',slot:'slotStatus',runtime:'runtime',memory:'memory',human:'human',note:'hubNote'};
