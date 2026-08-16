@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Palozebra Acid Machine</title>
+  <meta name="description" content="A tiny browser acid groovebox from Palozebra Creative Lab." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Back to Palozebra Creative Lab">PALOZEBRA <span>LAB</span></a>
+      <div class="transport-compact">
+        <button id="playBtn" class="transport primary" type="button" aria-pressed="false">PLAY</button>
+        <button id="stopBtn" class="transport" type="button">STOP</button>
+      </div>
+      <div class="tempo-block">
+        <label for="bpm">BPM</label>
+        <input id="bpm" type="number" min="60" max="180" value="124" inputmode="numeric" />
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">CREATIVE LAB / MUSIC EXPERIMENT 02</p>
+        <h1>ACID<br />MACHINE</h1>
+      </div>
+      <p class="hero-copy">A tiny browser groovebox. Sixteen steps, one acid voice, four synthesized drums, and just enough chaos.</p>
+    </section>
+
+    <section class="panel acid-panel" aria-labelledby="acidHeading">
+      <div class="panel-head">
+        <div>
+          <span class="index">01</span>
+          <h2 id="acidHeading">ACID</h2>
+        </div>
+        <div class="wave-toggle" role="group" aria-label="Oscillator waveform">
+          <button type="button" class="wave active" data-wave="sawtooth">SAW</button>
+          <button type="button" class="wave" data-wave="square">SQUARE</button>
+        </div>
+      </div>
+
+      <div class="knob-grid">
+        <label class="control"><span>CUTOFF</span><input id="cutoff" type="range" min="120" max="7000" value="1100" step="1" /><output></output></label>
+        <label class="control"><span>RESONANCE</span><input id="resonance" type="range" min="0.2" max="18" value="8" step="0.1" /><output></output></label>
+        <label class="control"><span>ENV MOD</span><input id="envMod" type="range" min="0" max="1" value="0.72" step="0.01" /><output></output></label>
+        <label class="control"><span>DECAY</span><input id="decay" type="range" min="0.05" max="0.7" value="0.24" step="0.01" /><output></output></label>
+        <label class="control"><span>ACCENT</span><input id="accentAmount" type="range" min="0" max="1" value="0.58" step="0.01" /><output></output></label>
+      </div>
+
+      <div class="step-header" id="stepHeader" aria-hidden="true"></div>
+      <div class="acid-sequencer" id="acidSequencer" aria-label="Acid sequencer"></div>
+      <div class="legend"><span><i class="dot on"></i> note</span><span><i class="dot accent"></i> accent</span><span><i class="dot slide"></i> slide</span></div>
+    </section>
+
+    <section class="panel drums-panel" aria-labelledby="drumsHeading">
+      <div class="panel-head">
+        <div><span class="index">02</span><h2 id="drumsHeading">DRUMS</h2></div>
+        <p class="microcopy">synthesized, no samples</p>
+      </div>
+      <div class="drum-sequencer" id="drumSequencer"></div>
+    </section>
+
+    <section class="panel pcf-panel" aria-labelledby="pcfHeading">
+      <div class="panel-head">
+        <div><span class="index">03</span><h2 id="pcfHeading">PATTERN FILTER</h2></div>
+        <button id="pcfToggle" class="mini-toggle pcf-power" type="button" aria-pressed="false">OFF</button>
+      </div>
+
+      <div class="pcf-topline">
+        <div class="pcf-selector" aria-label="Pattern selector">
+          <button id="pcfPrev" type="button" class="pcf-nav" aria-label="Previous filter pattern">←</button>
+          <div class="pcf-pattern-name"><span>PATTERN</span><strong id="pcfPatternLabel">01 · QUARTERS</strong></div>
+          <button id="pcfNext" type="button" class="pcf-nav" aria-label="Next filter pattern">→</button>
+        </div>
+        <div class="pcf-choice" aria-label="Filter mode">
+          <span>MODE</span>
+          <button type="button" class="pcf-mode active" data-pcf-mode="lowpass">LP</button>
+          <button type="button" class="pcf-mode" data-pcf-mode="bandpass">BP</button>
+        </div>
+        <div class="pcf-choice route-choice" aria-label="Filter routing">
+          <span>ROUTE</span>
+          <button type="button" class="pcf-route active" data-pcf-route="acid">ACID</button>
+          <button type="button" class="pcf-route" data-pcf-route="drums">DRUMS</button>
+          <button type="button" class="pcf-route" data-pcf-route="both">BOTH</button>
+        </div>
+      </div>
+
+      <div id="pcfPatternStrip" class="pcf-pattern-strip" aria-hidden="true"></div>
+
+      <div class="pcf-controls">
+        <label class="control"><span>FREQ</span><input id="pcfFreq" type="range" min="120" max="6500" value="720" step="1" /><output></output></label>
+        <label class="control"><span>Q</span><input id="pcfQ" type="range" min="0.2" max="24" value="12" step="0.1" /><output></output></label>
+        <label class="control"><span>AMOUNT</span><input id="pcfAmount" type="range" min="0" max="1" value="0.82" step="0.01" /><output></output></label>
+        <label class="control"><span>DECAY</span><input id="pcfDecay" type="range" min="0.025" max="0.8" value="0.18" step="0.005" /><output></output></label>
+      </div>
+      <p class="microcopy pcf-copy">Sixteen-step envelopes locked to the groove. High Q + BP gets rude fast.</p>
+    </section>
+
+    <section class="panel fx-panel" aria-labelledby="fxHeading">
+      <div class="panel-head">
+        <div><span class="index">04</span><h2 id="fxHeading">MESS IT UP</h2></div>
+      </div>
+      <div class="fx-grid">
+        <label class="control wide"><span>SWING</span><input id="swing" type="range" min="0" max="0.38" value="0.08" step="0.01" /><output></output></label>
+        <label class="control wide"><span>DISTORTION</span><input id="distortion" type="range" min="0" max="1" value="0.28" step="0.01" /><output></output></label>
+        <label class="control wide"><span>DELAY</span><input id="delayMix" type="range" min="0" max="0.65" value="0.22" step="0.01" /><output></output></label>
+        <label class="control wide"><span>MASTER</span><input id="master" type="range" min="0" max="1" value="0.72" step="0.01" /><output></output></label>
+      </div>
+      <div class="actions">
+        <button id="recordBtn" class="action record" type="button">● REC 10s</button>
+        <button id="takePlayBtn" class="action take-action" type="button" hidden>PLAY TAKE</button>
+        <a id="downloadTake" class="action take-action" href="#" download="palozebra-acid-take.webm" hidden>DOWNLOAD</a>
+        <button id="randomBtn" class="action random" type="button">RANDOMIZE</button>
+        <button id="clearBtn" class="action" type="button">CLEAR</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>PALOZEBRA CREATIVE LAB · PLAY FIRST, READ LATER.</p>
+      <p class="status" id="status">Tap PLAY to start audio.</p>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
