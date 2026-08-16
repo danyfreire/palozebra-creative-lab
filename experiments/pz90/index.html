@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#d8d5ca" />
+  <title>PZ-90 — Artificial Intelligence, circa 1990</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="stage" aria-label="PZ-90 handheld computer">
+    <section class="device" aria-label="PZ-90">
+      <div class="brand-row">
+        <div class="brand">PZ-90</div>
+        <div class="subbrand">ARTIFICIAL INTELLIGENCE · 1990</div>
+      </div>
+      <div class="screen-shell">
+        <div class="screen-meta" aria-hidden="true">
+          <span>MEM <b id="memoryValue">64K</b></span>
+          <span id="langIndicator">AUTO</span>
+          <span>BAT ███ · <b id="modeIndicator">READY</b></span>
+        </div>
+        <div class="screen" id="screen" role="log" aria-live="polite" aria-label="Conversation">
+          <div class="boot" id="bootText">
+            <div>PZ-90 PERSONAL INTELLIGENCE</div>
+            <div>ROM 1.1 · © 1990 PALOZEBRA LAB</div>
+            <div class="spacer"></div>
+            <div>TYPE SOMETHING.</div>
+            <div>ESCRIBE ALGO.</div>
+            <div class="cursor-line">_</div>
+          </div>
+          <div id="conversation" class="conversation" hidden></div>
+        </div>
+        <form id="chatForm" class="input-row" autocomplete="off">
+          <span class="prompt">&gt;</span>
+          <input id="userInput" name="message" type="text" maxlength="160" aria-label="Ask PZ-90" placeholder="TYPE / ESCRIBE" spellcheck="false" enterkeyhint="send" />
+        </form>
+      </div>
+      <div class="controls">
+        <div class="left-controls">
+          <div class="dpad" aria-hidden="true">
+            <span class="d-up"></span><span class="d-right"></span><span class="d-down"></span><span class="d-left"></span><span class="d-center"></span>
+          </div>
+        </div>
+        <div class="right-controls">
+          <button class="round-button b-button" id="forgetButton" type="button" aria-label="Forget last exchange">B</button>
+          <button class="round-button a-button" id="askButton" type="button" aria-label="Ask">A</button>
+          <div class="button-labels"><span>FORGET</span><span>ASK</span></div>
+        </div>
+      </div>
+      <div class="system-buttons">
+        <button id="selectButton" type="button" class="pill">SELECT</button>
+        <button id="resetButton" type="button" class="pill">START</button>
+      </div>
+      <div class="system-labels"><span>LANG</span><span>RESET</span></div>
+      <div class="speaker" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="lab-mark">PALOZEBRA CREATIVE LAB</div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
