@@ -6,43 +6,27 @@
   <title>Palozebra Creative Lab</title>
   <meta name="description" content="Palozebra Creative Lab — experimental interfaces, sound and visual systems." />
   <style>
-    :root{
-      color-scheme:dark;
-      --black:#050505;--ink:#0b0b0b;--paper:#e8e8e3;--muted:#8c8c87;--line:#30302d;
-      --green:#3FA535;--green-dark:#2E7D32;--gold:#F4A900;--gold-dark:#D68F00;--purple:#9b5cff;
-      --mono:"Lucida Console","Courier New",ui-monospace,monospace;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:var(--black);color:var(--paper);font-family:var(--mono)}
+    :root{color-scheme:dark;--black:#050505;--ink:#0b0b0b;--paper:#e8e8e3;--muted:#8c8c87;--line:#30302d;--green:#3FA535;--green-dark:#2E7D32;--gold:#F4A900;--gold-dark:#D68F00;--purple:#9b5cff;--mono:"Lucida Console","Courier New",ui-monospace,monospace}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--black);color:var(--paper);font-family:var(--mono)}
     body{min-height:100vh;overflow-x:hidden;background:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px) 0 0/100% 4px,radial-gradient(circle at 77% 16%,rgba(63,165,53,.08),transparent 22%),radial-gradient(circle at 13% 78%,rgba(244,169,0,.055),transparent 24%),#050505}
-    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.28;background:repeating-linear-gradient(180deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 3px);mix-blend-mode:screen}
-    a{color:inherit}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.28;background:repeating-linear-gradient(180deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 3px);mix-blend-mode:screen}a{color:inherit}
     .desktop{position:relative;min-height:100vh;padding:clamp(14px,2.3vw,30px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);grid-template-rows:auto 1fr auto;gap:clamp(12px,1.7vw,22px);isolation:isolate}
-    .window{position:relative;border:1px solid var(--paper);background:rgba(7,7,7,.9);box-shadow:7px 7px 0 rgba(63,165,53,.08)}
-    .window::after{content:"";position:absolute;inset:3px;border:1px solid rgba(255,255,255,.06);pointer-events:none}
+    .window{position:relative;border:1px solid var(--paper);background:rgba(7,7,7,.9);box-shadow:7px 7px 0 rgba(63,165,53,.08)}.window::after{content:"";position:absolute;inset:3px;border:1px solid rgba(255,255,255,.06);pointer-events:none}
     .titlebar{min-height:28px;padding:5px 8px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--paper);background:var(--paper);color:#050505;font-size:11px;line-height:1;text-transform:uppercase;letter-spacing:.08em}
     .controls{display:flex;gap:4px}.control{width:12px;height:12px;border:1px solid #050505;display:inline-block;background:transparent}
     .masthead{grid-column:1/-1;min-height:165px}.masthead-body{position:relative;min-height:135px;padding:clamp(16px,3vw,40px);overflow:hidden}
-    .brand{margin:0;max-width:13ch;font-size:clamp(2rem,7vw,7.4rem);font-weight:700;line-height:.82;letter-spacing:-.075em;text-transform:uppercase;word-break:break-word}
-    .brand span{color:var(--green);text-shadow:3px 0 0 rgba(244,169,0,.22)}
-    .sysmeta{position:absolute;top:18px;right:18px;width:min(39ch,42vw);color:var(--muted);font-size:clamp(9px,1vw,12px);line-height:1.55;text-align:right;text-transform:uppercase}
-    .blink::after{content:"_";color:var(--gold);animation:blink 1s steps(1,end) infinite}@keyframes blink{50%{opacity:0}}
+    .brand{margin:0;max-width:13ch;font-size:clamp(2rem,7vw,7.4rem);font-weight:700;line-height:.82;letter-spacing:-.075em;text-transform:uppercase;word-break:break-word}.brand span{color:var(--green);text-shadow:3px 0 0 rgba(244,169,0,.22)}
+    .sysmeta{position:absolute;top:18px;right:18px;width:min(39ch,42vw);color:var(--muted);font-size:clamp(9px,1vw,12px);line-height:1.55;text-align:right;text-transform:uppercase}.blink::after{content:"_";color:var(--gold);animation:blink 1s steps(1,end) infinite}@keyframes blink{50%{opacity:0}}
     .experiments{grid-column:1;grid-row:2;align-self:start;transform:translateX(clamp(0px,2vw,24px))}.experiments-body{padding:0}
     .exp-row{position:relative;display:grid;grid-template-columns:82px minmax(0,1fr) 116px;gap:10px;padding:13px 12px;border-bottom:1px dotted #454540;text-decoration:none;text-transform:uppercase;font-size:clamp(11px,1.3vw,14px);overflow:hidden}.exp-row:last-child{border-bottom:0}
     .exp-row.active{color:var(--paper);cursor:pointer}.exp-row.active .exp-code{color:var(--gold)}.exp-row.active .exp-state{color:var(--green)}
     .exp-row.active:hover,.exp-row.active:focus-visible{outline:none;background:var(--paper);color:#050505}.exp-row.active:hover .exp-code,.exp-row.active:focus-visible .exp-code{color:var(--purple);animation:glitchText .13s steps(2,end) infinite}.exp-row.active:hover .exp-state,.exp-row.active:focus-visible .exp-state{color:var(--green-dark)}
-    .exp-row.active:hover::before,.exp-row.active:focus-visible::before{content:"▓▒░▓░▒▓";position:absolute;right:5%;top:0;color:var(--gold);opacity:.55;animation:glitchBar .22s steps(2,end) infinite}
-    @keyframes glitchText{0%{transform:translateX(0);text-shadow:1px 0 var(--green)}33%{transform:translateX(1px);text-shadow:-2px 0 var(--purple)}66%{transform:translateX(-1px);text-shadow:2px 0 var(--gold)}100%{transform:translateX(0)}}
-    @keyframes glitchBar{0%{transform:translate(0,0)}50%{transform:translate(-7px,3px)}100%{transform:translate(4px,-2px)}}
+    .exp-row.active:hover::before,.exp-row.active:focus-visible::before{content:"▓▒░▓░▒▓";position:absolute;right:5%;top:0;color:var(--gold);opacity:.55;animation:glitchBar .22s steps(2,end) infinite}@keyframes glitchText{0%{transform:translateX(0);text-shadow:1px 0 var(--green)}33%{transform:translateX(1px);text-shadow:-2px 0 var(--purple)}66%{transform:translateX(-1px);text-shadow:2px 0 var(--gold)}100%{transform:translateX(0)}}@keyframes glitchBar{0%{transform:translate(0,0)}50%{transform:translate(-7px,3px)}100%{transform:translate(4px,-2px)}}
     .exp-row.disabled{color:#54544f;user-select:none}.exp-state{text-align:right}
-    .diag{grid-column:2;grid-row:2;align-self:center;margin-top:clamp(30px,9vh,110px);transform:rotate(.55deg) translateX(-8px)}
-    .diag-body{min-height:250px;padding:14px;font-size:clamp(10px,1.05vw,12px);line-height:1.58;color:#a7a79f}.bar{height:12px;margin:5px 0 11px;border:1px solid #4a4a45;background:linear-gradient(90deg,var(--green) 0 36%,transparent 36% 42%,var(--gold) 42% 68%,transparent 68% 75%,var(--purple) 75% 83%,transparent 83% 100%)}
-    .ascii{margin:18px 0 0;white-space:pre;color:#686862;overflow:hidden}
+    .diag{grid-column:2;grid-row:2;align-self:center;margin-top:clamp(30px,9vh,110px);transform:rotate(.55deg) translateX(-8px)}.diag-body{min-height:250px;padding:14px;font-size:clamp(10px,1.05vw,12px);line-height:1.58;color:#a7a79f}.bar{height:12px;margin:5px 0 11px;border:1px solid #4a4a45;background:linear-gradient(90deg,var(--green) 0 36%,transparent 36% 42%,var(--gold) 42% 68%,transparent 68% 75%,var(--purple) 75% 83%,transparent 83% 100%)}.ascii{margin:18px 0 0;white-space:pre;color:#686862;overflow:hidden}
     .floating{position:absolute;z-index:-1;width:clamp(130px,18vw,280px);height:clamp(85px,11vw,160px);right:2.6vw;top:31vh;border:1px solid var(--gold-dark);transform:rotate(-2.2deg);opacity:.34;background:repeating-linear-gradient(135deg,transparent 0 7px,rgba(214,143,0,.08) 7px 8px)}
-    .meta-link,.lang-switch{appearance:none;border:0;background:none;padding:0;color:inherit;font:inherit;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;cursor:pointer}
-    .meta-link:hover,.meta-link:focus-visible,.lang-switch:hover,.lang-switch:focus-visible{outline:none;color:var(--gold);text-shadow:1px 0 var(--green),-1px 0 var(--purple);animation:glitchText .18s steps(2,end) 2}
-    .signature{position:absolute;right:clamp(20px,4vw,62px);bottom:clamp(64px,9vh,110px);z-index:4;padding:7px 9px;border:1px solid #4c4c46;background:#050505;color:#777770;font-size:clamp(9px,1vw,12px);text-transform:uppercase;transform:rotate(-1.25deg)}
-    .signature a{color:var(--paper);text-decoration:none}.signature a:hover,.signature a:focus-visible{outline:none;color:var(--purple);text-shadow:2px 0 var(--green)}
+    .meta-link,.lang-switch{appearance:none;border:0;background:none;padding:0;color:inherit;font:inherit;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;cursor:pointer}.meta-link:hover,.meta-link:focus-visible,.lang-switch:hover,.lang-switch:focus-visible{outline:none;color:var(--gold);text-shadow:1px 0 var(--green),-1px 0 var(--purple);animation:glitchText .18s steps(2,end) 2}
+    .signature{position:absolute;right:clamp(20px,4vw,62px);bottom:clamp(64px,9vh,110px);z-index:4;padding:7px 9px;border:1px solid #4c4c46;background:#050505;color:#777770;font-size:clamp(9px,1vw,12px);text-transform:uppercase;transform:rotate(-1.25deg)}.signature a{color:var(--paper);text-decoration:none}.signature a:hover,.signature a:focus-visible{outline:none;color:var(--purple);text-shadow:2px 0 var(--green)}
     .footerline{grid-column:1/-1;grid-row:3;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;color:#696963;font-size:10px;line-height:1.55;text-transform:uppercase;letter-spacing:.06em}.footerlinks{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.footerline strong{color:var(--green);font-weight:400}
     @media(max-width:780px){.desktop{grid-template-columns:1fr;grid-template-rows:auto auto auto auto}.experiments,.diag,.footerline,.masthead{grid-column:1;transform:none}.masthead{grid-row:1}.experiments{grid-row:2}.diag{grid-row:3;margin-top:0}.footerline{grid-row:4;grid-template-columns:1fr}.footerlinks{justify-content:flex-start}.sysmeta{position:static;width:auto;margin-top:20px;text-align:left}.brand{max-width:10ch}.exp-row{grid-template-columns:68px minmax(0,1fr)}.exp-state{grid-column:2;text-align:left}.floating{display:none}.signature{position:static;margin:4px 0 2px;justify-self:start;transform:rotate(-.6deg)}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}
@@ -54,29 +38,25 @@
       <div class="titlebar"><span>pz_lab.sys / root</span><span class="controls" aria-hidden="true"><i class="control"></i><i class="control"></i><i class="control"></i></span></div>
       <div class="masthead-body">
         <h1 class="brand" id="lab-title">Palozebra <span>Creative</span> Lab</h1>
-        <div class="sysmeta">
-          NODE: 92928080.XYZ<br>
-          MODE: EXPERIMENTAL / PUBLIC<br>
-          BUILD: <span id="buildStamp"></span><br>
-          CHANNEL: <span class="blink">OPEN</span><br>
-          <button class="lang-switch" id="langSwitch" type="button" title="language selector">LANGUAGE / IDIOMA / LINGUA [AUTO]</button>
-        </div>
+        <div class="sysmeta">NODE: 92928080.XYZ<br>MODE: EXPERIMENTAL / PUBLIC<br>BUILD: <span id="buildStamp"></span><br>CHANNEL: <span class="blink">OPEN</span><br><button class="lang-switch" id="langSwitch" type="button" title="language selector">LANGUAGE / IDIOMA / LINGUA [AUTO]</button></div>
       </div>
     </section>
 
     <section class="window experiments" aria-label="Experiments">
-      <div class="titlebar"><span id="experimentsTitle">experiments.idx</span><span id="slotStatus">01 active / 03 slots</span></div>
+      <div class="titlebar"><span>experiments.idx</span><span id="slotStatus">02 active / 03 slots</span></div>
       <div class="experiments-body">
         <a class="exp-row active" href="/experiments/water-theremin/">
           <span class="exp-code">EXP_01</span><span id="exp1Label">CREATE MUSIC</span><span class="exp-state" id="exp1Status">STATUS: ACTIVE</span>
         </a>
-        <div class="exp-row disabled" aria-disabled="true"><span class="exp-code">EXP_02</span><span id="exp2Label">UNALLOCATED_PROCESS</span><span class="exp-state" id="exp2Status">STATUS: NULL</span></div>
+        <a class="exp-row active" href="/experiments/acid-machine/">
+          <span class="exp-code">EXP_02</span><span id="exp2Label">ACID MACHINE</span><span class="exp-state" id="exp2Status">STATUS: ACTIVE</span>
+        </a>
         <div class="exp-row disabled" aria-disabled="true"><span class="exp-code">EXP_03</span><span id="exp3Label">NO_SIGNAL / RESERVED</span><span class="exp-state" id="exp3Status">STATUS: ----</span></div>
       </div>
     </section>
 
     <aside class="window diag" aria-label="System diagnostics">
-      <div class="titlebar"><span id="monitorTitle">system_monitor.exe</span><span>?</span></div>
+      <div class="titlebar"><span>system_monitor.exe</span><span>?</span></div>
       <div class="diag-body">
         <span id="runtime">PALOZEBRA/LAB::CREATIVE_RUNTIME</span><br>
         <span id="memory">MEMORY FRAGMENTATION: ACCEPTABLE</span><br>
@@ -96,48 +76,27 @@
     </aside>
 
     <div class="floating" aria-hidden="true"></div>
-
     <div class="signature">A THING BY <a href="https://23788080.xyz" target="_blank" rel="noopener">DANY FREIRE ↗</a></div>
 
     <footer class="footerline">
       <span id="hubNote">THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.</span>
-      <span class="footerlinks">
-        <a class="meta-link" href="https://palozebra.com" target="_blank" rel="noopener"><strong>PALOZEBRA</strong> // MAIN SYSTEM ↗</a>
-        <span>GYE / 2026</span>
-      </span>
+      <span class="footerlinks"><a class="meta-link" href="https://palozebra.com" target="_blank" rel="noopener"><strong>PALOZEBRA</strong> // MAIN SYSTEM ↗</a><span>GYE / 2026</span></span>
     </footer>
   </main>
 
   <script>
-    const copy = {
-      en:{html:'en',exp1:'CREATE MUSIC',exp1Status:'STATUS: ACTIVE',exp2:'UNALLOCATED_PROCESS',exp2Status:'STATUS: NULL',exp3:'NO_SIGNAL / RESERVED',exp3Status:'STATUS: ----',slot:'01 ACTIVE / 03 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
-      es:{html:'es',exp1:'CREAR MÚSICA',exp1Status:'ESTADO: ACTIVO',exp2:'PROCESO_NO_ASIGNADO',exp2Status:'ESTADO: NULO',exp3:'SIN_SEÑAL / RESERVADO',exp3Status:'ESTADO: ----',slot:'01 ACTIVO / 03 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
-      it:{html:'it',exp1:'CREA MUSICA',exp1Status:'STATO: ATTIVO',exp2:'PROCESSO_NON_ASSEGNATO',exp2Status:'STATO: NULLO',exp3:'NESSUN_SEGNALE / RISERVATO',exp3Status:'STATO: ----',slot:'01 ATTIVO / 03 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
+    const copy={
+      en:{html:'en',exp1:'CREATE MUSIC',exp1Status:'STATUS: ACTIVE',exp2:'ACID MACHINE',exp2Status:'STATUS: ACTIVE',exp3:'NO_SIGNAL / RESERVED',exp3Status:'STATUS: ----',slot:'02 ACTIVE / 03 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
+      es:{html:'es',exp1:'CREAR MÚSICA',exp1Status:'ESTADO: ACTIVO',exp2:'ACID MACHINE',exp2Status:'ESTADO: ACTIVO',exp3:'SIN_SEÑAL / RESERVADO',exp3Status:'ESTADO: ----',slot:'02 ACTIVOS / 03 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
+      it:{html:'it',exp1:'CREA MUSICA',exp1Status:'STATO: ATTIVO',exp2:'ACID MACHINE',exp2Status:'STATO: ATTIVO',exp3:'NESSUN_SEGNALE / RISERVATO',exp3Status:'STATO: ----',slot:'02 ATTIVI / 03 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
     };
-
     const ids={exp1:'exp1Label',exp1Status:'exp1Status',exp2:'exp2Label',exp2Status:'exp2Status',exp3:'exp3Label',exp3Status:'exp3Status',slot:'slotStatus',runtime:'runtime',memory:'memory',human:'human',note:'hubNote'};
     const order=['auto','es','en','it'];
     const browserLang=()=>{const l=(navigator.language||'en').toLowerCase();return l.startsWith('es')?'es':l.startsWith('it')?'it':'en'};
-    let mode=localStorage.getItem('pzlab-lang')||'auto';
-    if(!order.includes(mode)) mode='auto';
-
-    function applyLanguage(){
-      const actual=mode==='auto'?browserLang():mode;
-      const c=copy[actual];
-      document.documentElement.lang=c.html;
-      Object.entries(ids).forEach(([key,id])=>{const el=document.getElementById(id);if(el)el.textContent=c[key]});
-      document.getElementById('langSwitch').textContent=`LANGUAGE / IDIOMA / LINGUA [${mode.toUpperCase()}]`;
-    }
-
-    document.getElementById('langSwitch').addEventListener('click',()=>{
-      mode=order[(order.indexOf(mode)+1)%order.length];
-      localStorage.setItem('pzlab-lang',mode);
-      applyLanguage();
-    });
-
-    const d=new Date();
-    document.getElementById('buildStamp').textContent=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('.')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');
-    applyLanguage();
+    let mode=localStorage.getItem('pzlab-lang')||'auto';if(!order.includes(mode))mode='auto';
+    function applyLanguage(){const actual=mode==='auto'?browserLang():mode;const c=copy[actual];document.documentElement.lang=c.html;Object.entries(ids).forEach(([key,id])=>{const el=document.getElementById(id);if(el)el.textContent=c[key]});document.getElementById('langSwitch').textContent=`LANGUAGE / IDIOMA / LINGUA [${mode.toUpperCase()}]`}
+    document.getElementById('langSwitch').addEventListener('click',()=>{mode=order[(order.indexOf(mode)+1)%order.length];localStorage.setItem('pzlab-lang',mode);applyLanguage()});
+    const d=new Date();document.getElementById('buildStamp').textContent=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('.')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');applyLanguage();
   </script>
 </body>
 </html>
