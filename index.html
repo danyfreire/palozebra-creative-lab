@@ -43,7 +43,7 @@
     </section>
 
     <section class="window experiments" aria-label="Experiments">
-      <div class="titlebar"><span>experiments.idx</span><span id="slotStatus">02 active / 03 slots</span></div>
+      <div class="titlebar"><span>experiments.idx</span><span id="slotStatus">03 active / 03 slots</span></div>
       <div class="experiments-body">
         <a class="exp-row active" href="/experiments/water-theremin/">
           <span class="exp-code">EXP_01</span><span id="exp1Label">CREATE MUSIC</span><span class="exp-state" id="exp1Status">STATUS: ACTIVE</span>
@@ -51,7 +51,9 @@
         <a class="exp-row active" href="/experiments/acid-machine/">
           <span class="exp-code">EXP_02</span><span id="exp2Label">ACID MACHINE</span><span class="exp-state" id="exp2Status">STATUS: ACTIVE</span>
         </a>
-        <div class="exp-row disabled" aria-disabled="true"><span class="exp-code">EXP_03</span><span id="exp3Label">NO_SIGNAL / RESERVED</span><span class="exp-state" id="exp3Status">STATUS: ----</span></div>
+        <a class="exp-row active" href="https://github.com/danyfreire/palozebra-vinyl/releases/latest" target="_blank" rel="noopener">
+          <span class="exp-code">EXP_03</span><span id="exp3Label">PALOZEBRA VINYL</span><span class="exp-state" id="exp3Status">STATUS: DOWNLOAD</span>
+        </a>
       </div>
     </section>
 
@@ -86,9 +88,9 @@
 
   <script>
     const copy={
-      en:{html:'en',exp1:'CREATE MUSIC',exp1Status:'STATUS: ACTIVE',exp2:'ACID MACHINE',exp2Status:'STATUS: ACTIVE',exp3:'NO_SIGNAL / RESERVED',exp3Status:'STATUS: ----',slot:'02 ACTIVE / 03 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
-      es:{html:'es',exp1:'CREAR MÚSICA',exp1Status:'ESTADO: ACTIVO',exp2:'ACID MACHINE',exp2Status:'ESTADO: ACTIVO',exp3:'SIN_SEÑAL / RESERVADO',exp3Status:'ESTADO: ----',slot:'02 ACTIVOS / 03 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
-      it:{html:'it',exp1:'CREA MUSICA',exp1Status:'STATO: ATTIVO',exp2:'ACID MACHINE',exp2Status:'STATO: ATTIVO',exp3:'NESSUN_SEGNALE / RISERVATO',exp3Status:'STATO: ----',slot:'02 ATTIVI / 03 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
+      en:{html:'en',exp1:'CREATE MUSIC',exp1Status:'STATUS: ACTIVE',exp2:'ACID MACHINE',exp2Status:'STATUS: ACTIVE',exp3:'PALOZEBRA VINYL',exp3Status:'STATUS: DOWNLOAD',slot:'03 ACTIVE / 03 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
+      es:{html:'es',exp1:'CREAR MÚSICA',exp1Status:'ESTADO: ACTIVO',exp2:'ACID MACHINE',exp2Status:'ESTADO: ACTIVO',exp3:'PALOZEBRA VINYL',exp3Status:'ESTADO: DESCARGA',slot:'03 ACTIVOS / 03 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
+      it:{html:'it',exp1:'CREA MUSICA',exp1Status:'STATO: ATTIVO',exp2:'ACID MACHINE',exp2Status:'STATO: ATTIVO',exp3:'PALOZEBRA VINYL',exp3Status:'STATO: DOWNLOAD',slot:'03 ATTIVI / 03 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
     };
     const ids={exp1:'exp1Label',exp1Status:'exp1Status',exp2:'exp2Label',exp2Status:'exp2Status',exp3:'exp3Label',exp3Status:'exp3Status',slot:'slotStatus',runtime:'runtime',memory:'memory',human:'human',note:'hubNote'};
     const order=['auto','es','en','it'];
