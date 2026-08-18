@@ -43,7 +43,7 @@
     </section>
 
     <section class="window experiments" aria-label="Experiments">
-      <div class="titlebar"><span>experiments.idx</span><span id="slotStatus">04 active / 04 slots</span></div>
+      <div class="titlebar"><span>experiments.idx</span><span id="slotStatus">05 active / 05 slots</span></div>
       <div class="experiments-body">
         <a class="exp-row active" href="/experiments/water-theremin/">
           <span class="exp-code">EXP_01</span><span id="exp1Label">CREATE MUSIC</span><span class="exp-state" id="exp1Status">STATUS: ACTIVE</span>
@@ -56,6 +56,9 @@
         </a>
         <a class="exp-row active" href="/experiments/pz90/">
           <span class="exp-code">EXP_04</span><span id="exp4Label">PZ-90</span><span class="exp-state" id="exp4Status">STATUS: V1.0</span>
+        </a>
+        <a class="exp-row active" href="/experiments/nowhere-voice/">
+          <span class="exp-code">EXP_05</span><span id="exp5Label">NOWHERE VOICE</span><span class="exp-state" id="exp5Status">STATUS: ACTIVE</span>
         </a>
       </div>
     </section>
@@ -91,11 +94,11 @@
 
   <script>
     const copy={
-      en:{html:'en',exp1:'CREATE MUSIC',exp1Status:'STATUS: ACTIVE',exp2:'ACID MACHINE',exp2Status:'STATUS: ACTIVE',exp3:'PALOZEBRA VINYL',exp3Status:'STATUS: RELEASE',exp4:'PZ-90',exp4Status:'STATUS: V1.0',slot:'04 ACTIVE / 04 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
-      es:{html:'es',exp1:'CREAR MÚSICA',exp1Status:'ESTADO: ACTIVO',exp2:'ACID MACHINE',exp2Status:'ESTADO: ACTIVO',exp3:'PALOZEBRA VINYL',exp3Status:'ESTADO: RELEASE',exp4:'PZ-90',exp4Status:'ESTADO: V1.0',slot:'04 ACTIVOS / 04 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
-      it:{html:'it',exp1:'CREA MUSICA',exp1Status:'STATO: ATTIVO',exp2:'ACID MACHINE',exp2Status:'STATO: ATTIVO',exp3:'PALOZEBRA VINYL',exp3Status:'STATO: RELEASE',exp4:'PZ-90',exp4Status:'STATO: V1.0',slot:'04 ATTIVI / 04 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
+      en:{html:'en',exp1:'CREATE MUSIC',exp1Status:'STATUS: ACTIVE',exp2:'ACID MACHINE',exp2Status:'STATUS: ACTIVE',exp3:'PALOZEBRA VINYL',exp3Status:'STATUS: RELEASE',exp4:'PZ-90',exp4Status:'STATUS: V1.0',exp5:'NOWHERE VOICE',exp5Status:'STATUS: ACTIVE',slot:'05 ACTIVE / 05 SLOTS',runtime:'PALOZEBRA/LAB::CREATIVE_RUNTIME',memory:'MEMORY FRAGMENTATION: ACCEPTABLE',human:'HUMAN INPUT: REQUIRED',note:'THIS INTERFACE IS A HUB. EACH EXPERIMENT MAY IGNORE ITS RULES.'},
+      es:{html:'es',exp1:'CREAR MÚSICA',exp1Status:'ESTADO: ACTIVO',exp2:'ACID MACHINE',exp2Status:'ESTADO: ACTIVO',exp3:'PALOZEBRA VINYL',exp3Status:'ESTADO: RELEASE',exp4:'PZ-90',exp4Status:'ESTADO: V1.0',exp5:'NOWHERE VOICE',exp5Status:'ESTADO: ACTIVO',slot:'05 ACTIVOS / 05 ESPACIOS',runtime:'PALOZEBRA/LAB::ENTORNO_CREATIVO',memory:'FRAGMENTACIÓN DE MEMORIA: ACEPTABLE',human:'ENTRADA HUMANA: REQUERIDA',note:'ESTA INTERFAZ ES UN HUB. CADA EXPERIMENTO PUEDE IGNORAR SUS REGLAS.'},
+      it:{html:'it',exp1:'CREA MUSICA',exp1Status:'STATO: ATTIVO',exp2:'ACID MACHINE',exp2Status:'STATO: ATTIVO',exp3:'PALOZEBRA VINYL',exp3Status:'STATO: RELEASE',exp4:'PZ-90',exp4Status:'STATO: V1.0',exp5:'NOWHERE VOICE',exp5Status:'STATO: ATTIVO',slot:'05 ATTIVI / 05 SPAZI',runtime:'PALOZEBRA/LAB::AMBIENTE_CREATIVO',memory:'FRAMMENTAZIONE MEMORIA: ACCETTABILE',human:'INPUT UMANO: RICHIESTO',note:'QUESTA INTERFACCIA È UN HUB. OGNI ESPERIMENTO PUÒ IGNORARNE LE REGOLE.'}
     };
-    const ids={exp1:'exp1Label',exp1Status:'exp1Status',exp2:'exp2Label',exp2Status:'exp2Status',exp3:'exp3Label',exp3Status:'exp3Status',exp4:'exp4Label',exp4Status:'exp4Status',slot:'slotStatus',runtime:'runtime',memory:'memory',human:'human',note:'hubNote'};
+    const ids={exp1:'exp1Label',exp1Status:'exp1Status',exp2:'exp2Label',exp2Status:'exp2Status',exp3:'exp3Label',exp3Status:'exp3Status',exp4:'exp4Label',exp4Status:'exp4Status',exp5:'exp5Label',exp5Status:'exp5Status',slot:'slotStatus',runtime:'runtime',memory:'memory',human:'human',note:'hubNote'};
     const order=['auto','es','en','it'];
     const browserLang=()=>{const l=(navigator.language||'en').toLowerCase();return l.startsWith('es')?'es':l.startsWith('it')?'it':'en'};
     let mode=localStorage.getItem('pzlab-lang')||'auto';if(!order.includes(mode))mode='auto';
