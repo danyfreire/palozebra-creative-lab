@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nowhere Voice — glasses + chickenhead knob test</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080808}
+iframe{border:0;width:100%;height:100%;display:block;background:#080808}
+</style>
+</head>
+<body>
+<iframe id="app" src="../v02.html?glasses=knob2" allow="microphone; autoplay"></iframe>
+<script>
+const iframe=document.getElementById('app');
+iframe.addEventListener('load',()=>{
+  try{
+    const d=iframe.contentDocument;
+    if(!d) return;
+    const stage=d.querySelector('.stage');
+    const slider=d.getElementById('time');
+    const bottom=d.querySelector('.bottom');
+    const yearEl=d.getElementById('year');
+    const nameEl=d.getElementById('name')||d.getElementById('eraName');
+    const techEl=d.getElementById('tech');
+    const recordBtn=d.getElementById('record');
+    if(!stage||!slider||!bottom) return;
+
+    const lang=(()=>{const l=(navigator.language||'en').toLowerCase();return l.startsWith('es')?'es':l.startsWith('it')?'it':'en'})();
+    const i18n={
+      es:{drag:'ARRASTRA LA PERILLA',rec:'Graba una frase de 5–10 segundos',back:'Volver al Creative Lab',time:'TIEMPO'},
+      en:{drag:'DRAG THE KNOB',rec:'Record a 5–10 second phrase',back:'Back to Creative Lab',time:'TIME'},
+      it:{drag:'TRASCINA LA MANOPOLA',rec:'Registra una frase di 5–10 secondi',back:'Torna al Creative Lab',time:'TIME'}
+    }[lang];
+
+    const style=d.createElement('style');
+    style.textContent=`
+      .status,.hint,.back,.photo,.head,.ticks{display:none!important}
+      .btn{backdrop-filter:none!important}
+      #time{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
+      .bottom{display:flex!important;flex-direction:column!important;align-items:center!important;gap:18px!important;margin-top:0!important}
+      .era{transition:none!important}
+      .grain{animation-duration:.55s!important;opacity:.11!important}
+      .glass-scene{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+      .glass-main-wrap{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:min(56vw,640px);aspect-ratio:2.5/1;perspective:1100px;pointer-events:none}
+      .glass-main{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+      .glass-shape{position:absolute;inset:0;opacity:0;will-change:opacity,transform;mix-blend-mode:screen;filter:drop-shadow(0 14px 28px rgba(0,0,0,.28))}
+      .glass-shape svg{width:100%;height:100%;overflow:visible}
+      .glass-shape .frame{fill:none;stroke:rgba(255,255,255,.82);stroke-linecap:round;stroke-linejoin:round}
+      .glass-shape .tint-orange{fill:rgba(255,166,72,.16);stroke:rgba(255,221,170,.5)}
+      .glass-shape .tint-blue{fill:rgba(116,182,255,.15);stroke:rgba(201,233,255,.46)}
+      .glass-shape .tint-dark{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.2)}
+      .glass-echo{position:absolute;inset:0;opacity:.08;mix-blend-mode:screen;filter:blur(1.5px)}
+      .glass-echo.echo-a{transform:translate3d(-18px,3px,-40px)}
+      .glass-echo.echo-b{transform:translate3d(16px,-3px,-20px)}
+      .glow-a,.glow-b,.glow-c{position:absolute;pointer-events:none;mix-blend-mode:screen;will-change:transform,opacity}
+      .glow-a{left:-16vw;top:4vh;width:52vw;height:52vw;border-radius:50%;background:radial-gradient(circle,rgba(255,214,156,.13),rgba(255,136,74,.05) 42%,transparent 70%);filter:blur(30px)}
+      .glow-b{right:-16vw;bottom:6vh;width:46vw;height:46vw;border-radius:50%;background:radial-gradient(circle,rgba(120,184,255,.12),rgba(155,90,255,.04) 42%,transparent 70%);filter:blur(28px)}
+      .glow-c{left:-8%;top:44%;width:116%;height:9vh;background:linear-gradient(90deg,transparent,rgba(255,255,255,.02) 30%,rgba(255,238,200,.10) 50%,rgba(255,255,255,.02) 70%,transparent);filter:blur(11px)}
+      .knob-wrap{position:relative;width:min(310px,46vw);height:min(228px,36vw);display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
+      .knob-label{position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.42);white-space:nowrap}
+      .knob-shell{position:relative;width:min(128px,22vw);height:min(128px,22vw);border-radius:50%;background:radial-gradient(circle at 35% 30%,#313136,#1a1a1d 52%,#09090a 80%,#020203 100%);box-shadow:inset 0 2px 10px rgba(255,255,255,.10), inset 0 -8px 20px rgba(0,0,0,.68), 0 12px 28px rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.08)}
+      .knob-shell:before{content:'';position:absolute;inset:13%;border-radius:50%;background:radial-gradient(circle at 34% 27%,rgba(255,255,255,.09),transparent 44%)}
+      .knob-pointer{position:absolute;left:50%;top:50%;width:54%;height:72%;transform-origin:50% 74%;pointer-events:none;will-change:transform}
+      .knob-pointer:before{content:'';position:absolute;left:50%;top:4%;transform:translateX(-50%);width:56%;height:82%;background:linear-gradient(180deg,#101012 0%,#060607 100%);clip-path:polygon(50% 0%, 100% 34%, 64% 100%, 36% 100%, 0% 34%);border-radius:9px}
+      .knob-pointer:after{content:'';position:absolute;left:50%;top:12%;transform:translateX(-50%) rotate(1.5deg);width:4px;height:48%;background:rgba(255,255,255,.88);border-radius:3px}
+      .knob-readout{margin-top:-2px;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.56)}
+      .year-mark{position:absolute;left:50%;top:50%;font-size:10px;letter-spacing:.12em;color:rgba(255,255,255,.82);transform-origin:0 0;white-space:nowrap}
+      .year-mark:before{content:'';position:absolute;left:50%;top:-13px;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.38)}
+      .glass-back{position:absolute;right:18px;top:18px;z-index:30;width:34px;height:34px;border:1px solid rgba(255,255,255,.22);border-radius:50%;display:grid;place-items:center;color:#fff;text-decoration:none;background:rgba(0,0,0,.28);font:18px/1 Arial,sans-serif}
+      @media(max-width:760px){.glass-main-wrap{width:min(82vw,480px);top:38%}.glow-a{width:82vw;height:82vw;left:-34vw;top:2vh}.glow-b{width:72vw;height:72vw;right:-32vw;bottom:10vh}.knob-wrap{width:256px;height:194px}.knob-shell{width:110px;height:110px}}
+    `;
+    d.head.appendChild(style);
+
+    if(recordBtn){recordBtn.title=i18n.rec;recordBtn.setAttribute('aria-label',i18n.rec)}
+
+    const back=d.createElement('a');back.className='glass-back';back.href='../../../';back.textContent='←';back.title=i18n.back;back.setAttribute('aria-label',i18n.back);stage.appendChild(back);
+
+    const scene=d.createElement('div');scene.className='glass-scene';scene.innerHTML='<div class="glow-a"></div><div class="glow-b"></div><div class="glow-c"></div><div class="glass-main-wrap"><div class="glass-main" id="glassMain"></div></div>';stage.insertBefore(scene,stage.querySelector('.vignette'));
+    const glassMain=scene.querySelector('#glassMain');
+
+    const glasses=[
+      `<svg viewBox="0 0 240 100"><path class="frame" d="M23 44c0-10 9-18 20-18h43c9 0 15 8 15 18v18c0 11-8 19-20 19H43c-12 0-20-8-20-19V44zm116 0c0-10 8-18 18-18h40c12 0 20 8 20 18v18c0 11-8 19-20 19h-40c-10 0-18-8-18-19V44zM99 49h42M20 45h-9M218 45h10" style="stroke-width:7.5"/></svg>`,
+      `<svg viewBox="0 0 240 100"><circle class="frame" cx="75" cy="52" r="24" style="stroke-width:3.2"/><circle class="frame" cx="163" cy="52" r="24" style="stroke-width:3.2"/><path class="frame" d="M99 52c8-8 31-8 40 0M48 51H33M191 51h15" style="stroke-width:3.2"/></svg>`,
+      `<svg viewBox="0 0 240 100"><circle class="frame" cx="77" cy="52" r="26" style="stroke-width:2.7"/><circle class="frame" cx="165" cy="52" r="26" style="stroke-width:2.7"/><path class="frame" d="M103 51c7-7 29-7 36 0M51 51H34M191 51h15M68 27l-6 10M174 27l6 10" style="stroke-width:2.7"/></svg>`,
+      `<svg viewBox="0 0 240 100"><path class="frame" d="M29 49c0-12 11-22 24-22h34c8 0 14 4 19 10l3 4v25c0 10-8 18-18 18H48c-11 0-19-8-19-18V49zm102-8c5-9 13-14 23-14h33c14 0 25 10 25 22v17c0 10-8 18-19 18h-44c-10 0-18-8-18-18V41zm-23 8h26M28 48H18M212 48h11" style="stroke-width:6"/></svg>`,
+      `<svg viewBox="0 0 240 100"><circle class="frame tint-orange" cx="79" cy="53" r="23" style="stroke-width:3.2"/><circle class="frame tint-orange" cx="161" cy="53" r="23" style="stroke-width:3.2"/><path class="frame" d="M102 52c8-8 28-8 36 0M56 52H37M184 52h19" style="stroke-width:3.2"/></svg>`,
+      `<svg viewBox="0 0 240 100"><circle class="frame tint-blue" cx="80" cy="53" r="25" style="stroke-width:3.2"/><circle class="frame tint-blue" cx="160" cy="53" r="25" style="stroke-width:3.2"/><path class="frame" d="M105 52c7-6 22-6 30 0M55 52H38M185 52h17" style="stroke-width:3.2"/></svg>`,
+      `<svg viewBox="0 0 240 100"><rect class="frame tint-dark" x="55" y="35" width="48" height="31" rx="12" ry="12" style="stroke-width:2.8"/><rect class="frame tint-dark" x="137" y="35" width="48" height="31" rx="12" ry="12" style="stroke-width:2.8"/><path class="frame" d="M103 50c8-6 25-6 34 0M54 50H36M185 50h18" style="stroke-width:2.8"/></svg>`,
+      `<svg viewBox="0 0 240 100"><path class="frame tint-dark" d="M48 39c0-10 8-18 18-18h33c13 0 20 7 20 18v21c0 10-7 18-20 18H66c-10 0-18-8-18-18V39zm73 0c0-11 7-18 20-18h33c10 0 18 8 18 18v21c0 10-8 18-18 18h-33c-13 0-20-8-20-18V39zM118 44c8-7 15-7 22 0M47 46H31M193 46h16" style="stroke-width:3"/><path class="frame" d="M110 23h20" style="stroke-width:3"/></svg>`
+    ];
+    const glassStops=[0,.12,.28,.42,.58,.72,.86,1];
+    const shapeEls=glasses.map((svg)=>{const el=d.createElement('div');el.className='glass-shape';el.innerHTML=svg;glassMain.appendChild(el);return el});
+    const echoA=d.createElement('div'),echoB=d.createElement('div');echoA.className='glass-shape glass-echo echo-a';echoB.className='glass-shape glass-echo echo-b';glassMain.appendChild(echoA);glassMain.appendChild(echoB);
+
+    const knobWrap=d.createElement('div');knobWrap.className='knob-wrap';knobWrap.innerHTML=`<div class="knob-label">${i18n.drag}</div><div class="knob-shell"><div class="knob-pointer"></div></div><div class="knob-readout">${i18n.time}</div>`;
+    const knob=knobWrap.querySelector('.knob-shell'),pointer=knobWrap.querySelector('.knob-pointer');
+    [['1962',-130],['1966',-65],['1969',0],['1973',65],['1980',130]].forEach(([text,angle])=>{const mark=d.createElement('div');mark.className='year-mark';mark.textContent=text;const r=92;mark.style.transform=`translate(-50%,-50%) rotate(${angle}deg) translateY(-${r}px) rotate(${-angle}deg)`;knobWrap.appendChild(mark)});
+    bottom.insertBefore(knobWrap,bottom.firstChild);
+
+    const ERAS=[{x:0,year:1962,name:'EARLY MONO',tech:'MONO · BRIGHT · MANUAL DOUBLE'},{x:.28,year:1966,name:'PSYCHEDELIC',tech:'ADT · TAPE DRIFT · PLATE'},{x:.56,year:1969,name:'LATE ABBEY ROAD',tech:'ROTARY · SATURATION · CHAMBER'},{x:.79,year:1973,name:'EARLY SOLO',tech:'WARM · SLAPBACK · COMPRESSION'},{x:1,year:1980,name:'DUAL FANTASTIC',tech:'CLEAN · WIDE DOUBLE · DIGITAL SPACE'}];
+    const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+    const bell=(x,c,w)=>Math.exp(-.5*Math.pow((x-c)/w,2));
+    const smooth=(a,b,x)=>{let t=clamp((x-a)/(b-a));return t*t*(3-2*t)};
+    function weights(x){const out=[0,0,0,0,0];if(x<=0){out[0]=1;return out}if(x>=1){out[4]=1;return out}for(let i=0;i<4;i++){if(x>=ERAS[i].x&&x<=ERAS[i+1].x){const t=smooth(ERAS[i].x,ERAS[i+1].x,x);out[i]=1-t;out[i+1]=t;break}}return out}
+    function updateTexts(x){const w=weights(x);if(yearEl)yearEl.textContent=Math.round(w.reduce((s,v,i)=>s+v*ERAS[i].year,0));const idx=w.indexOf(Math.max(...w));if(nameEl)nameEl.textContent=ERAS[idx].name;if(techEl)techEl.textContent=ERAS[idx].tech}
+    function updateGlasses(x){
+      glassMain.style.transform=`rotateY(${-22+x*44}deg)`;
+      let topIndex=0,topWeight=0;
+      shapeEls.forEach((el,i)=>{const dist=Math.abs(x-glassStops[i]);const w=Math.exp(-Math.pow(dist/.14,2));if(w>topWeight){topWeight=w;topIndex=i}const local=(x-glassStops[i])/.14;el.style.opacity=(.015+w*.94).toFixed(3);el.style.transform=`rotateY(${local*58}deg) scale(${.9+w*.14})`});
+      echoA.innerHTML=glasses[topIndex];echoB.innerHTML=glasses[Math.min(glasses.length-1,topIndex+1)];echoA.style.opacity=(.04+topWeight*.07).toFixed(3);echoB.style.opacity=(.03+topWeight*.05).toFixed(3);
+      const psy=bell(x,.31,.13),rot=bell(x,.57,.12),solo=bell(x,.79,.11),modern=bell(x,.97,.08);
+      scene.querySelector('.glow-a').style.transform=`translate3d(${(-4+psy*8)}vw,${(-2+rot*3)}vh,0) scale(${.95+psy*.12})`;
+      scene.querySelector('.glow-b').style.transform=`translate3d(${(2-psy*5-modern*2)}vw,${(2-rot*4)}vh,0) scale(${.96+rot*.1})`;
+      scene.querySelector('.glow-c').style.transform=`translate3d(0,${(x-.5)*9}vh,0) rotate(${-4+rot*8-solo*2}deg)`;
+    }
+    function setKnobVisual(x){pointer.style.transform=`translate(-50%,-50%) rotate(${-135+x*270}deg)`}
+
+    let currentValue=parseFloat(slider.value||'.38'),raf=0,dspTimer=0,lastDSP=0;
+    function sendDSP(){dspTimer=0;lastDSP=performance.now();slider.dispatchEvent(new Event('input',{bubbles:true}))}
+    function setValue(v,{fromUI=true}={}){currentValue=clamp(v);slider.value=currentValue.toFixed(4);setKnobVisual(currentValue);updateTexts(currentValue);updateGlasses(currentValue);if(fromUI){const now=performance.now(),wait=Math.max(0,40-(now-lastDSP));if(!dspTimer)dspTimer=setTimeout(sendDSP,wait)}}
+    function queueSet(v){if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{raf=0;setValue(v)})}
+    function pointToValue(clientX,clientY){const r=knob.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let ang=Math.atan2(clientY-cy,clientX-cx)*180/Math.PI+90;if(ang>180)ang-=360;ang=clamp(ang,-135,135);return(ang+135)/270}
+    let dragging=false;
+    knobWrap.addEventListener('pointerdown',e=>{dragging=true;knobWrap.setPointerCapture?.(e.pointerId);queueSet(pointToValue(e.clientX,e.clientY));e.preventDefault()});
+    knobWrap.addEventListener('pointermove',e=>{if(dragging)queueSet(pointToValue(e.clientX,e.clientY))});
+    const end=e=>{dragging=false;knobWrap.releasePointerCapture?.(e.pointerId)};
+    knobWrap.addEventListener('pointerup',end);knobWrap.addEventListener('pointercancel',end);
+
+    setValue(currentValue,{fromUI:false});sendDSP();
+  }catch(err){console.error('Nowhere Voice glasses knob test',err)}
+});
+</script>
+</body>
+</html>
