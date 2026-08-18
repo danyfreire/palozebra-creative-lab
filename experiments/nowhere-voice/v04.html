@@ -1,0 +1,39 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nowhere Voice v0.4</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080808}iframe{border:0;width:100%;height:100%;display:block;background:#080808}</style></head><body><iframe id="app" src="./v02.html?visual=4" allow="microphone; autoplay"></iframe><script>
+const f=document.getElementById('app');
+f.addEventListener('load',()=>{try{
+ const d=f.contentDocument;if(!d)return;
+ const stage=d.querySelector('.stage');if(!stage)return;
+ const style=d.createElement('style');
+ style.textContent=`
+ .v4-atmos{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden;mix-blend-mode:screen}
+ .v4-orb,.v4-ring,.v4-beam,.v4-slices{position:absolute;will-change:transform,opacity;transition:opacity .12s linear,transform .12s linear,filter .12s linear}
+ .v4-orb{border-radius:50%;filter:blur(44px)}
+ .v4-a{width:76vw;height:76vw;left:-20vw;top:-18vw;background:radial-gradient(circle,rgba(255,239,206,.52),rgba(255,143,77,.18) 34%,transparent 68%)}
+ .v4-b{width:70vw;height:70vw;right:-22vw;bottom:-20vw;background:radial-gradient(circle,rgba(90,184,255,.44),rgba(168,67,255,.16) 34%,transparent 70%)}
+ .v4-ring{left:50%;top:46%;width:50vmin;height:50vmin;border:2px solid rgba(255,255,255,.26);border-radius:50%;box-shadow:0 0 0 8vmin rgba(255,255,255,.055),0 0 0 17vmin rgba(255,255,255,.035)}
+ .v4-beam{left:-15%;width:130%;height:14vh;top:39%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06) 30%,rgba(255,238,200,.34) 50%,rgba(255,255,255,.06) 70%,transparent);filter:blur(13px)}
+ .v4-slices{inset:0;background:repeating-linear-gradient(90deg,transparent 0 8vw,rgba(255,255,255,.07) 8.2vw 8.5vw,transparent 8.7vw 14vw)}
+ .v4-label{position:absolute;right:26px;top:22px;z-index:22;color:rgba(255,255,255,.28);font:9px/1.2 Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;pointer-events:none}
+ @media(max-width:700px){.v4-a{width:120vw;height:120vw;left:-48vw;top:-28vw}.v4-b{width:115vw;height:115vw;right:-48vw;bottom:-30vw}.v4-ring{width:65vmin;height:65vmin}}
+ `;
+ d.head.appendChild(style);
+ const atmos=d.createElement('div');atmos.className='v4-atmos';atmos.innerHTML='<div class="v4-orb v4-a"></div><div class="v4-orb v4-b"></div><div class="v4-ring"></div><div class="v4-beam"></div><div class="v4-slices"></div>';
+ stage.insertBefore(atmos,stage.querySelector('.vignette'));
+ const lab=d.createElement('div');lab.className='v4-label';lab.textContent='VISUAL ENGINE v0.4';stage.appendChild(lab);
+ const name=d.getElementById('eraName')||d.getElementById('name');
+ const rename=()=>{if(!name)return;if(name.textContent==='EARLY BEATLES')name.textContent='EARLY MONO';if(name.textContent==='DOUBLE FANTASY')name.textContent='DUAL FANTASTIC'};
+ rename();if(name)new MutationObserver(rename).observe(name,{childList:true,subtree:true,characterData:true});
+ const slider=d.getElementById('time'),a=d.querySelector('.v4-a'),b=d.querySelector('.v4-b'),ring=d.querySelector('.v4-ring'),beam=d.querySelector('.v4-beam'),slices=d.querySelector('.v4-slices');
+ const bell=(x,c,w)=>Math.exp(-.5*((x-c)/w)**2);
+ function paint(){const x=+slider.value,early=bell(x,.06,.16),psy=bell(x,.31,.13),rot=bell(x,.57,.12),solo=bell(x,.79,.11),modern=bell(x,.97,.08);
+  a.style.opacity=(.06+early*.18+psy*.42+rot*.15+solo*.08).toFixed(2);
+  b.style.opacity=(.04+psy*.36+rot*.20+modern*.30).toFixed(2);
+  a.style.transform=`translate(${(-6+psy*20+rot*7).toFixed(1)}vw,${(-3+rot*9).toFixed(1)}vh) scale(${(.9+psy*.28).toFixed(2)})`;
+  b.style.transform=`translate(${(5-psy*15-modern*5).toFixed(1)}vw,${(4-rot*8).toFixed(1)}vh) scale(${(.88+rot*.28+modern*.1).toFixed(2)})`;
+  ring.style.opacity=(.02+psy*.32+rot*.55+modern*.08).toFixed(2);ring.style.transform=`translate(-50%,-50%) rotate(${(x*120).toFixed(0)}deg) scale(${(.7+rot*.62+psy*.2).toFixed(2)})`;
+  beam.style.opacity=(.02+rot*.46+solo*.26).toFixed(2);beam.style.transform=`translateY(${((x-.5)*18).toFixed(1)}vh) rotate(${(-7+rot*13-solo*5).toFixed(1)}deg)`;
+  slices.style.opacity=(.02+early*.12+psy*.25+modern*.22).toFixed(2);slices.style.transform=`translateX(${((x-.5)*12).toFixed(1)}vw) skewX(${(-5+psy*12-modern*4).toFixed(1)}deg)`;
+ }
+ slider.addEventListener('input',paint);paint();
+}catch(e){console.error('Nowhere Voice v0.4',e)}});
+</script></body></html>
